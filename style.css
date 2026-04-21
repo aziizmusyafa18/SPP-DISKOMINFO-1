@@ -1,85 +1,111 @@
-*{
+* {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Verdana, Geneva, Tahoma, sans-serif;
+    font-family: 'inter', -apple-system, sans-serif;
 }
 
-body{
-    padding: 50px;
-    background: #f1f3f6;
-}
-
-.container{
-    max-width: 900px;
-    margin: auto;
-    background: white;
-    border-radius: 10px;
-    box-shadow: 0 4px rgba(0,0,0,0.08);
-}
-
-.header{
-    padding: 10px;
-    color: white;
-    font-size: 15px;
-    font-weight: bold;
-}
-
-.form-box{
-    padding: 25px;
-}
-
-label{
-    display: block;
-    margin-top: 15px;
-    margin-bottom: 6px;
-    font-weight: 600;
-    outline: none;
-}
-
-input::focus,
-textarea::focus{
-    border-color: #4CAF50;
-}
-
-textarea{
-    resize:vertical;
-    min-height: 120px;
-}
-
-.row{
+body {
+    /* Background dengan nuansa korporat/pemerintahan */
+    background: #f4f7f9 url('https://www.transparenttextures.com/patterns/cubes.png');
+    height: 125vh;
     display: flex;
-    gap: 20px;
+    align-items: center;
+    justify-content: center;
 }
 
-.row .col{ 
-    flex:1;
+.login-wrapper {
+    width: 100%;
+    padding: 25px;
+    display: flex;
+    justify-content: center;
 }
 
-button{ 
-    margin-top: 20px;
-    padding: 15px 20px;
-    background: #0d6efd;
-    color: white;
+.login-box {
+    background: #ffffff;
+    width: 100%;
+    max-width: 420px;
+    padding: 25px;
+    border-radius: 4px;
+    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
+    border-top: 5px solid #003366; /* Warna biru dinas */
+}
+
+.login-header {
+    text-align: center;
+    margin-bottom: 30px;
+}
+
+.login-header img {
+    width: 80px;
+    margin-bottom: 15px;
+}
+
+.login-header h2 {
+    font-size: 1.4rem;
+    color: #003366;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+}
+
+.login-header p {
+    color: #777;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+/* Input Styles */
+.form-group {
+    margin-bottom: 20px;
+}
+
+.form-group label {
+    display: block;
+    font-size: 0.85rem;
+    font-weight: 600;
+    color: #333;
+    margin-bottom: 8px;
+}
+
+.form-group input {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    background: #fdfdfd;
+    transition: all 0.3s;
+}
+
+.form-group input:focus {
+    outline: none;
+    border-color: #003366;
+    background: #fff;
+    box-shadow: 0 0 5px rgba(0, 51, 102, 0.2);
+}
+
+/* Button Styles */
+.btn-login {
+    width: 100%;
+    padding: 14px;
+    background: #003366;
+    color: #fff;
     border: none;
-    border-radius: 5px;
+    border-radius: 4px;
+    font-weight: bold;
     cursor: pointer;
-    font-size: 15px;
+    transition: background 0.3s;
+    letter-spacing: 1px;
 }
 
-button:hover{
-    background: #0b5ed7;
+.btn-login:hover {
+    background: #002244;
 }
 
-.preview{
+.form-footer {
     margin-top: 30px;
-    border-top: 2px solid #ddd;
-    padding-top:20px;
+    text-align: center;
+    font-size: 0.75rem;
+    color: #999;
+    border-top: 1px solid #eee;
+    padding-top: 15px;
 }
-
-.pdf-box{
-    background: #fafafa;
-    border: 1px solid #ddd;
-    padding: 20px;
-    line-height: 1.7;
-}   
