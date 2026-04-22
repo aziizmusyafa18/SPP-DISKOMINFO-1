@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Magang Statistik Kediri Kab</title>
+    <link rel="stylesheet" href="style.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+</head>
+<body>
+    <div class="login-wrapper">
+        <div class="login-box">
+            <div class="login-header">
+                <img src="logo.png" alt="Logo Instansi">
+                <h2>Magang Statistik Kediri Kabupaten</h2>
+                <p>Sistem pembuatan Laporan Otomatis</p>
+            </div>
+           
+                <div class="form-group">
+                    <label>Kepada</label>
+                    <input type="text" id="kepada" placeholder="Contoh: Yth. Kepala Dinas Komunikasi dan Informatika" required>
+                </div>
+                <div class="form-group">
+                    <label>Perihal Surat</label>
+                    <input type="text" id="perihalSurat" placeholder="Contoh: Laporan Rapat Koordinasi Review Pengelolaan Aduan Tahun 2025" required>
+                </div>
+                <div class="form-group">
+                    <label>Nama Kegiatan</label>
+                    <input type="text" id="namaKegiatan" placeholder="Contoh: Rapat Koordinasi Review Pengelolaan Aduan Tahun 2025" required>
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Dan Waktu Rapat</label>
+                    <input type="datetime-local" id="tanggalWaktuRapat">
+                </div>
+                <div class="form-group">
+                    <label>Tempat Rapat</label>
+                    <input type="text" id="tempatRapat" placeholder="Contoh: Ruang Rapat Kepala Diskominfo" required>
+                </div>
+                <div class="form-group">
+                    <label>Pimpinan Rapat</label>
+                    <input type="text" id="pimpinanRapat" placeholder="Contoh: Diana Herawati, S.Si.T., M.P.H. selaku Plt. Kepala Dinas Kominfo" required>
+                </div>
+                <div class="form-group">
+                    <label>Peserta Rapat</label>
+                    <textarea id="pesertaRapat" placeholder="Masukkan daftar peserta rapat, pisahkan dengan koma atau baris baru" rows="5" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Hasil Pembahasan</label>
+                    <textarea id="hasilPembahasan" placeholder="Masukkan hasil pembahasan rapat" rows="7" required></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Kesimpulan/Saran/RTL</label>
+                    <textarea id="kesimpulanSaranRTL" placeholder="Masukkan kesimpulan, saran, atau rencana tindak lanjut" rows="7" required></textarea>
+                </div>
+                
+                <div class="button-group">
+                    <button type="button" class="btn-login" id="viewReportBtn">View Report</button>
+                    <button type="button" class="btn-login" id="exportPdfBtn" style="display: none;">Export PDF</button>
+                </div>
+                
+                <div id="reportPreview" style="margin-top: 20px; padding: 0; border: 1px solid #2b2b2b; border-radius: 5px; background-color: #323639; display: none; overflow: hidden;">
+                    <div id="previewContent" style="width:100%;"></div>
+                </div>
+
+                <div class="form-footer">
+                    <p>&copy; 2026 Hak Cipta Magang Dinas Komunikasi dan Informatika</p>
+                </div>
+            </form>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>

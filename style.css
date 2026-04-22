@@ -1,111 +1,134 @@
 * {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    font-family: 'inter', -apple-system, sans-serif;
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family:
+    "inter",
+    -apple-system,
+    sans-serif;
 }
 
 body {
-    /* Background dengan nuansa korporat/pemerintahan */
-    background: #f4f7f9 url('https://www.transparenttextures.com/patterns/cubes.png');
-    height: 125vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
+  background-image: url("bg1.jpg");
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
+  background-attachment: fixed;
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .login-wrapper {
-    width: 100%;
-    padding: 25px;
-    display: flex;
-    justify-content: center;
+  width: 100%;
+  padding: 25px;
+  display: flex;
+  justify-content: center;
 }
 
 .login-box {
-    background: #ffffff;
-    width: 100%;
-    max-width: 420px;
-    padding: 25px;
-    border-radius: 4px;
-    box-shadow: 0 15px 35px rgba(0,0,0,0.1);
-    border-top: 5px solid #003366; /* Warna biru dinas */
+  background: #ffffff;
+  width: 100%;
+  max-width: 750px;
+  padding: 40px 50px;
+  border-radius: 4px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  border-top: 5px solid #003366; /* Warna biru dinas */
 }
 
 .login-header {
-    text-align: center;
-    margin-bottom: 30px;
+  text-align: center;
+  margin-bottom: 30px;
 }
 
 .login-header img {
-    width: 80px;
-    margin-bottom: 15px;
+  width: 80px;
+  margin-bottom: 15px;
 }
 
 .login-header h2 {
-    font-size: 1.4rem;
-    color: #003366;
-    text-transform: uppercase;
-    letter-spacing: 1px;
+  font-size: 1.4rem;
+  color: #003366;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
 
 .login-header p {
-    color: #777;
-    font-size: 0.9rem;
-    margin-top: 5px;
+  color: #777;
+  font-size: 0.9rem;
+  margin-top: 5px;
 }
 
 /* Input Styles */
 .form-group {
-    margin-bottom: 20px;
+  margin-bottom: 20px;
 }
 
 .form-group label {
-    display: block;
-    font-size: 0.85rem;
-    font-weight: 600;
-    color: #333;
-    margin-bottom: 8px;
+  display: block;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
 }
 
-.form-group input {
-    width: 100%;
-    padding: 12px 15px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    background: #fdfdfd;
-    transition: all 0.3s;
+.form-group input,
+.form-group textarea { /* Added textarea here */
+  width: 100%;
+  padding: 12px 15px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  background: #fdfdfd;
+  transition: all 0.3s;
+  resize: vertical; /* Added for vertical resizing only */
 }
 
-.form-group input:focus {
-    outline: none;
-    border-color: #003366;
-    background: #fff;
-    box-shadow: 0 0 5px rgba(0, 51, 102, 0.2);
+.form-group input:focus,
+.form-group textarea:focus { /* Added textarea here */
+  outline: none;
+  border-color: #003366;
+  background: #fff;
+  box-shadow: 0 0 5px rgba(0, 51, 102, 0.2);
 }
 
 /* Button Styles */
 .btn-login {
-    width: 100%;
-    padding: 14px;
-    background: #003366;
-    color: #fff;
-    border: none;
-    border-radius: 4px;
-    font-weight: bold;
-    cursor: pointer;
-    transition: background 0.3s;
-    letter-spacing: 1px;
+  width: 100%;
+  padding: 14px;
+  background: #003366;
+  color: #fff;
+  border: none;
+  border-radius: 4px;
+  font-weight: bold;
+  cursor: pointer;
+  transition: background 0.3s;
+  letter-spacing: 1px;
+  margin-bottom: 10px; /* Add some space below buttons if they are not in a group */
 }
 
 .btn-login:hover {
-    background: #002244;
+  background: #002244;
+}
+
+.button-group {
+    display: flex;
+    gap: 10px; /* Space between buttons */
+    margin-top: 20px;
+    margin-bottom: 20px; /* Add some space below the button group */
+}
+
+.button-group .btn-login {
+    flex: 1; /* Allow buttons to take equal width within the group */
+    width: auto; /* Override the 100% width for individual buttons in a group */
+    margin-bottom: 0; /* Remove bottom margin if inside a group */
 }
 
 .form-footer {
-    margin-top: 30px;
-    text-align: center;
-    font-size: 0.75rem;
-    color: #999;
-    border-top: 1px solid #eee;
-    padding-top: 15px;
+  margin-top: 30px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: #999;
+  border-top: 1px solid #eee;
+  padding-top: 15px;
 }
