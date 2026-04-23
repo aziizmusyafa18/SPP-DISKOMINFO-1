@@ -284,6 +284,30 @@ document.addEventListener('DOMContentLoaded', () => {
         return doc;
     };
 
+    const isMobileDevice = () => /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
+
+    const renderPdfToIframe = () => {
+        previewContent.innerHTML = `
+            <iframe
+                src="${lastBlobUrl}#toolbar=1&navpanes=0&view=FitH"
+                style="width:100%; height:80vh; border:none; background:#525659;"
+                title="Pratinjau Laporan PDF">
+            </iframe>
+        `;
+    };
+
+    const renderFallbackLink = () => {
+        previewContent.innerHTML = `
+            <div style="padding:20px; text-align:center;">
+                <p style="color:#ddd; margin-bottom:12px;">Pratinjau tidak tersedia di perangkat ini.</p>
+                <a href="${lastBlobUrl}" target="_blank" rel="noopener"
+                   style="display:inline-block; padding:10px 20px; background:#4a90e2; color:#fff; text-decoration:none; border-radius:5px;">
+                   Buka Laporan di Tab Baru
+                </a>
+            </div>
+        `;
+    };
+
     const renderPdfToCanvas = async (arrayBuffer) => {
         if (!window.pdfjsLib) throw new Error('pdfjsLib not loaded');
         const pdf = await window.pdfjsLib.getDocument({ data: arrayBuffer }).promise;
@@ -335,30 +359,26 @@ document.addEventListener('DOMContentLoaded', () => {
         exportPdfBtn.style.display = 'block';
         previewContent.innerHTML = '<p style="color:#ddd; text-align:center; padding:20px;">Memuat pratinjau...</p>';
 
-        try {
-            const arrayBuffer = await blob.arrayBuffer();
-            await renderPdfToCanvas(arrayBuffer);
-        } catch (err) {
-            console.error('PDF.js render gagal, fallback ke iframe/tombol:', err);
-            const isMobile = /Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent);
-            if (isMobile) {
-                previewContent.innerHTML = `
-                    <div style="padding:20px; text-align:center;">
-                        <p style="color:#ddd; margin-bottom:12px;">Pratinjau tidak tersedia di perangkat ini.</p>
-                        <a href="${lastBlobUrl}" target="_blank" rel="noopener"
-                           style="display:inline-block; padding:10px 20px; background:#4a90e2; color:#fff; text-decoration:none; border-radius:5px;">
-                           Buka Laporan di Tab Baru
-                        </a>
-                    </div>
-                `;
-            } else {
-                previewContent.innerHTML = `
-                    <iframe
-                        src="${lastBlobUrl}#toolbar=1&navpanes=0&view=FitH"
-                        style="width:100%; height:80vh; border:none; background:#525659;"
-                        title="Pratinjau Laporan PDF">
-                    </iframe>
-                `;
+        if (isMobileDevice()) {
+            try {
+                const arrayBuffer = await blob.arrayBuffer();
+                await renderPdfToCanvas(arrayBuffer);
+            } catch (err) {
+                console.error('PDF.js render gagal di mobile, fallback ke tombol:', err);
+                renderFallbackLink();
+            }
+        } else {
+            try {
+                renderPdfToIframe();
+            } catch (err) {
+                console.error('Iframe render gagal di desktop, fallback ke PDF.js:', err);
+                try {
+                    const arrayBuffer = await blob.arrayBuffer();
+                    await renderPdfToCanvas(arrayBuffer);
+                } catch (err2) {
+                    console.error('PDF.js fallback juga gagal:', err2);
+                    renderFallbackLink();
+                }
             }
         }
     });
