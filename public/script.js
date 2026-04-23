@@ -383,15 +383,58 @@ document.addEventListener('DOMContentLoaded', () => {
         }
     });
 
-    exportPdfBtn.addEventListener('click', () => {
+    const saveLaporanToServer = async (d, blob, filename) => {
+        const formData = new FormData();
+        formData.append('kepada', d.kepada);
+        formData.append('perihalSurat', d.perihalSurat);
+        formData.append('namaKegiatan', d.namaKegiatan);
+        formData.append('tanggalWaktuRapat', d.tanggalWaktuRapat);
+        formData.append('tempatRapat', d.tempatRapat);
+        formData.append('pimpinanRapat', d.pimpinanRapat);
+        formData.append('pesertaRapat', d.pesertaRapat);
+        formData.append('hasilPembahasan', d.hasilPembahasan);
+        formData.append('kesimpulanSaranRTL', d.kesimpulanSaranRTL);
+        formData.append('filename', filename);
+        formData.append('pdf', blob, filename);
+
+        const res = await fetch('../api/save_laporan.php', {
+            method: 'POST',
+            body: formData,
+        });
+        const result = await res.json().catch(() => ({ ok: false, error: 'Respon server tidak valid.' }));
+        if (!res.ok || !result.ok) {
+            throw new Error(result.error || `HTTP ${res.status}`);
+        }
+        return result;
+    };
+
+    exportPdfBtn.addEventListener('click', async () => {
         const d = getFormData();
         if (!isComplete(d)) {
             alert('Mohon lengkapi semua kolom sebelum mengekspor laporan.');
             return;
         }
+
         const doc = buildPdf(d);
         const filename = `Laporan_${d.perihalSurat.replace(/\s/g, '_')}_${new Date().getTime()}.pdf`;
+
+        // Simpan lokal (download di browser)
         doc.save(filename);
-        alert('Laporan berhasil diekspor sebagai PDF!');
+
+        // Kirim ke server untuk disimpan di DB
+        const originalLabel = exportPdfBtn.textContent;
+        exportPdfBtn.disabled = true;
+        exportPdfBtn.textContent = 'Menyimpan...';
+        try {
+            const blob = doc.output('blob');
+            await saveLaporanToServer(d, blob, filename);
+            alert('Laporan berhasil diekspor dan tersimpan di database.');
+        } catch (err) {
+            console.error('Gagal menyimpan laporan ke server:', err);
+            alert('Laporan berhasil diekspor, tapi gagal menyimpan ke database:\n' + err.message);
+        } finally {
+            exportPdfBtn.disabled = false;
+            exportPdfBtn.textContent = originalLabel;
+        }
     });
 });
