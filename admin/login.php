@@ -23,25 +23,34 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if ($lockUntil > time()) {
         $error = 'Terlalu banyak percobaan. Coba lagi dalam ' . ($lockUntil - time()) . ' detik.';
     } else {
-        $username = trim($_POST['username'] ?? '');
-        $password = $_POST['password'] ?? '';
+        $pin = $_POST['pin'] ?? '';
 
-        if ($username === '' || $password === '') {
-            $error = 'Username dan password wajib diisi.';
+        if ($pin === '') {
+            $error = 'PIN wajib diisi.';
         } else {
-            $stmt = db()->prepare('SELECT id, password_hash FROM users WHERE username = ? LIMIT 1');
-            $stmt->execute([$username]);
-            $user = $stmt->fetch();
+            // Kita ambil semua user dan cek hash PIN-nya
+            // Karena tidak ada username, kita harus iterasi atau memiliki kolom khusus.
+            // Untuk efisiensi, kita ambil semua user. Biasanya jumlah admin/staf tidak ribuan.
+            $stmt = db()->query('SELECT id, password_hash FROM users');
+            $users = $stmt->fetchAll();
+            
+            $authenticated_user = null;
+            foreach ($users as $u) {
+                if (password_verify($pin, $u['password_hash'])) {
+                    $authenticated_user = $u;
+                    break;
+                }
+            }
 
-            if ($user && password_verify($password, $user['password_hash'])) {
+            if ($authenticated_user) {
                 // Sukses: reset counter, regenerate session ID, set user.
                 session_regenerate_id(true);
-                $_SESSION['user_id']          = (int)$user['id'];
+                $_SESSION['user_id']          = (int)$authenticated_user['id'];
                 $_SESSION['login_attempts']   = 0;
                 unset($_SESSION['login_lock_until']);
 
                 $upd = db()->prepare('UPDATE users SET last_login = NOW() WHERE id = ?');
-                $upd->execute([$user['id']]);
+                $upd->execute([$authenticated_user['id']]);
 
                 header('Location: dashboard.php');
                 exit;
@@ -55,7 +64,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 $_SESSION['login_attempts']   = 0;
                 $error = 'Terlalu banyak percobaan. Coba lagi dalam ' . LOCK_SECONDS . ' detik.';
             } else {
-                $error = 'Username atau password salah.';
+                $error = 'PIN yang Anda masukkan salah.';
             }
         }
     }
@@ -67,29 +76,35 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Admin - SPP DISKOMINFO</title>
-    <link rel="stylesheet" href="assets/admin.css">
+    <link rel="stylesheet" href="assets/admin.css?v=<?= @filemtime(__DIR__ . '/assets/admin.css') ?: time() ?>">
+    <style>
+        .pin-input {
+            text-align: center;
+            font-size: 2rem !important;
+            letter-spacing: 1rem;
+            padding: 15px !important;
+        }
+    </style>
 </head>
 <body class="auth-body">
     <main class="auth-card">
         <div class="auth-header">
             <img src="../public/logo.png" alt="Logo" class="auth-logo">
             <h1>Login Admin</h1>
-            <p class="auth-subtitle">SPP DISKOMINFO</p>
+            <p class="auth-subtitle">Masukkan PIN Keamanan</p>
         </div>
 
         <?php if ($error !== ''): ?>
             <div class="alert alert-error"><?= htmlspecialchars($error, ENT_QUOTES, 'UTF-8') ?></div>
         <?php endif; ?>
 
-        <form method="POST" action="login.php" autocomplete="off" novalidate>
+        <form method="POST" action="login.php" autocomplete="off">
             <?= csrf_field() ?>
 
-            <label for="username">Username</label>
-            <input type="text" id="username" name="username" required autofocus
-                   value="<?= htmlspecialchars($_POST['username'] ?? '', ENT_QUOTES, 'UTF-8') ?>">
-
-            <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <label for="pin" style="text-align: center; display: block;">PIN AKSES</label>
+            <input type="password" id="pin" name="pin" class="pin-input" 
+                   inputmode="numeric" pattern="[0-9]*" maxlength="6" 
+                   required autofocus placeholder="••••••">
 
             <button type="submit" class="btn-primary">Masuk</button>
         </form>
