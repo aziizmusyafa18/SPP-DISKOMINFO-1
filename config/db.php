@@ -1,14 +1,14 @@
 <?php
 /**
  * Koneksi database PDO MySQL.
- * Credential XAMPP default. Ganti kalau environment Anda berbeda.
+ * Mendukung environment variables untuk Docker.
  */
 
-const DB_HOST = 'localhost';
-const DB_NAME = 'spp_diskominfo';
-const DB_USER = 'root';
-const DB_PASS = '';
-const DB_CHARSET = 'utf8mb4';
+define('DB_HOST', getenv('DB_HOST') ?: 'localhost');
+define('DB_NAME', getenv('DB_NAME') ?: 'spp_diskominfo');
+define('DB_USER', getenv('DB_USER') ?: 'root');
+define('DB_PASS', getenv('DB_PASS') ?: '');
+define('DB_CHARSET', 'utf8mb4');
 
 function db(): PDO {
     static $pdo = null;
@@ -19,7 +19,11 @@ function db(): PDO {
             PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
             PDO::ATTR_EMULATE_PREPARES   => false,
         ];
-        $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+        try {
+            $pdo = new PDO($dsn, DB_USER, DB_PASS, $options);
+        } catch (PDOException $e) {
+            die("Koneksi gagal: " . $e->getMessage());
+        }
     }
     return $pdo;
 }

@@ -16,7 +16,7 @@ if ($_SERVER['REQUEST_METHOD'] !== 'POST') {
 }
 
 $required = [
-    'kepada', 'perihalSurat', 'namaKegiatan', 'tanggalWaktuRapat',
+    'namaPelapor', 'kepada', 'perihalSurat', 'namaKegiatan', 'tanggalWaktuRapat', 'tanggalWaktuSelesai',
     'tempatRapat', 'pimpinanRapat', 'pesertaRapat',
     'hasilPembahasan', 'kesimpulanSaranRTL',
 ];
@@ -29,8 +29,9 @@ foreach ($required as $field) {
 }
 
 if (!isset($_FILES['pdf']) || $_FILES['pdf']['error'] !== UPLOAD_ERR_OK) {
+    $errCode = $_FILES['pdf']['error'] ?? 'MISSING';
     http_response_code(400);
-    echo json_encode(['ok' => false, 'error' => 'File PDF tidak ditemukan atau gagal upload.']);
+    echo json_encode(['ok' => false, 'error' => "File PDF tidak ditemukan atau gagal upload (Error Code: $errCode)."]);
     exit;
 }
 
@@ -65,10 +66,20 @@ $tanggalObj = DateTime::createFromFormat('Y-m-d\TH:i', $tanggalInput)
     ?: DateTime::createFromFormat('Y-m-d\TH:i:s', $tanggalInput);
 if (!$tanggalObj) {
     http_response_code(400);
-    echo json_encode(['ok' => false, 'error' => 'Format tanggal tidak valid.']);
+    echo json_encode(['ok' => false, 'error' => 'Format tanggal mulai tidak valid.']);
     exit;
 }
 $tanggalMysql = $tanggalObj->format('Y-m-d H:i:s');
+
+$tanggalSelesaiInput = $_POST['tanggalWaktuSelesai'];
+$tanggalSelesaiObj = DateTime::createFromFormat('Y-m-d\TH:i', $tanggalSelesaiInput)
+    ?: DateTime::createFromFormat('Y-m-d\TH:i:s', $tanggalSelesaiInput);
+if (!$tanggalSelesaiObj) {
+    http_response_code(400);
+    echo json_encode(['ok' => false, 'error' => 'Format tanggal selesai tidak valid.']);
+    exit;
+}
+$tanggalSelesaiMysql = $tanggalSelesaiObj->format('Y-m-d H:i:s');
 
 $filename = $_POST['filename'] ?? ('Laporan_' . time() . '.pdf');
 // Bersihkan nama file
@@ -82,24 +93,26 @@ $createdBy = is_logged_in() ? ($_SESSION['user_id'] ?? null) : null;
 try {
     $stmt = db()->prepare('
         INSERT INTO laporan (
-            kepada, perihal_surat, nama_kegiatan, tanggal_waktu_rapat,
+            nama_pelapor, kepada, perihal_surat, nama_kegiatan, tanggal_waktu_rapat, tanggal_waktu_selesai,
             tempat_rapat, pimpinan_rapat, peserta_rapat, hasil_pembahasan,
             kesimpulan_saran_rtl, filename, file_size, pdf_blob, created_by
-        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
+        ) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)
     ');
-    $stmt->bindValue(1,  $_POST['kepada']);
-    $stmt->bindValue(2,  $_POST['perihalSurat']);
-    $stmt->bindValue(3,  $_POST['namaKegiatan']);
-    $stmt->bindValue(4,  $tanggalMysql);
-    $stmt->bindValue(5,  $_POST['tempatRapat']);
-    $stmt->bindValue(6,  $_POST['pimpinanRapat']);
-    $stmt->bindValue(7,  $_POST['pesertaRapat']);
-    $stmt->bindValue(8,  $_POST['hasilPembahasan']);
-    $stmt->bindValue(9,  $_POST['kesimpulanSaranRTL']);
-    $stmt->bindValue(10, $filename);
-    $stmt->bindValue(11, $pdfFile['size'], PDO::PARAM_INT);
-    $stmt->bindValue(12, $pdfBlob, PDO::PARAM_LOB);
-    $stmt->bindValue(13, $createdBy, $createdBy === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
+    $stmt->bindValue(1,  $_POST['namaPelapor']);
+    $stmt->bindValue(2,  $_POST['kepada']);
+    $stmt->bindValue(3,  $_POST['perihalSurat']);
+    $stmt->bindValue(4,  $_POST['namaKegiatan']);
+    $stmt->bindValue(5,  $tanggalMysql);
+    $stmt->bindValue(6,  $tanggalSelesaiMysql);
+    $stmt->bindValue(7,  $_POST['tempatRapat']);
+    $stmt->bindValue(8,  $_POST['pimpinanRapat']);
+    $stmt->bindValue(9,  $_POST['pesertaRapat']);
+    $stmt->bindValue(10, $_POST['hasilPembahasan']);
+    $stmt->bindValue(11, $_POST['kesimpulanSaranRTL']);
+    $stmt->bindValue(12, $filename);
+    $stmt->bindValue(13, $pdfFile['size'], PDO::PARAM_INT);
+    $stmt->bindValue(14, $pdfBlob, PDO::PARAM_LOB);
+    $stmt->bindValue(15, $createdBy, $createdBy === null ? PDO::PARAM_NULL : PDO::PARAM_INT);
     $stmt->execute();
 
     echo json_encode([

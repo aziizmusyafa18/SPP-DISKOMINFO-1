@@ -41,10 +41,12 @@ ON DUPLICATE KEY UPDATE username = username;
 -- -------------------------------------------------------------
 CREATE TABLE IF NOT EXISTS laporan (
   id                    INT AUTO_INCREMENT PRIMARY KEY,
+  nama_pelapor          VARCHAR(255) NOT NULL,
   kepada                VARCHAR(255) NOT NULL,
   perihal_surat         VARCHAR(255) NOT NULL,
   nama_kegiatan         VARCHAR(255) NOT NULL,
   tanggal_waktu_rapat   DATETIME     NOT NULL,
+  tanggal_waktu_selesai DATETIME     NOT NULL,
   tempat_rapat          VARCHAR(255) NOT NULL,
   pimpinan_rapat        VARCHAR(255) NOT NULL,
   peserta_rapat         TEXT         NOT NULL,

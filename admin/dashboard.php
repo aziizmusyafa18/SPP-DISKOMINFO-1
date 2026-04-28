@@ -115,7 +115,7 @@ $formatDate = function ($datetime) {
                 <form method="POST" action="logout.php" style="margin:0;">
                     <?= csrf_field() ?>
                     <button type="submit" class="nav-item nav-item-btn">
-                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+                        <svg class="nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2=x`"9" y2="12"/></svg>
                         <span>Logout</span>
                     </button>
                 </form>
@@ -186,7 +186,7 @@ $formatDate = function ($datetime) {
                     <button type="submit" class="btn-primary btn-inline">Filter</button>
                     <a href="dashboard.php" class="btn-reset">Reset</a>
                 </form>
-
+                
                 <section class="table-wrapper">
                     <table class="laporan-table">
                         <thead>

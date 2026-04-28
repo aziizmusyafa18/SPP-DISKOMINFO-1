@@ -24,6 +24,11 @@
                 <p>Sistem pembuatan Laporan Otomatis</p>
             </div>
            
+            <form id="laporanForm">
+                <div class="form-group">
+                    <label>Nama Pelapor</label>
+                    <input type="text" id="namaPelapor" placeholder="Masukkan nama lengkap Anda" required>
+                </div>
                 <div class="form-group">
                     <label>Kepada</label>
                     <input type="text" id="kepada" placeholder="Contoh: Yth. Kepala Dinas Komunikasi dan Informatika" required>
@@ -37,8 +42,12 @@
                     <input type="text" id="namaKegiatan" placeholder="Contoh: Rapat Koordinasi Review Pengelolaan Aduan Tahun 2025" required>
                 </div>
                 <div class="form-group">
-                    <label>Tanggal Dan Waktu Rapat</label>
+                    <label>Tanggal Dan Waktu Mulai</label>
                     <input type="datetime-local" id="tanggalWaktuRapat">
+                </div>
+                <div class="form-group">
+                    <label>Tanggal Dan Waktu Selesai</label>
+                    <input type="datetime-local" id="tanggalWaktuSelesai">
                 </div>
                 <div class="form-group">
                     <label>Tempat Rapat</label>
@@ -76,6 +85,8 @@
             </form>
         </div>
     </div>
-    <script src="script.js"></script>
+    <script>
+        document.write('<script src="script.js?v=' + new Date().getTime() + '"><\/script>');
+    </script>
 </body>
 </html>
